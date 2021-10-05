@@ -3,39 +3,36 @@ import matplotlib.pyplot as plt
 import sys
 import tkinter
 import matplotlib
+from commons import parser
 matplotlib.use('TkAgg')
 
-def parser():
-	try:
-		file = open('./data.csv')
-		tab = [[], []]
-		file.readline() # throwing first line
-		i = 1
-		for line in file.readlines():
-			b = line.split(",")
-			i += 1
-			if len(b) != 2 or b[0].isnumeric() == False or b[1][:-1].isnumeric() == False:
-				print("Data file invalid: line: ", i, file=os.stderr, flush=True)
-				exit(1)
-			tab[0].append(int(b[0]))
-			tab[1].append(int(b[1][:-1]))
-		file.close()
-	except:
-		print('Data file not found, or invalid', file=sys.stderr, flush=True)
-		exit(1)
+# def openFiles():
+# 	print(openFiles.selector)
+# 	if openFiles.selector == 0:
+# 		try:
+# 			file = open('./predicator.py', 'r+')
+# 			selector = 1
+# 		except:
+# 			print('Predicator.py file not found, or invalid', file=sys.stderr, flush=True)
+# 			sys.exit(1)
+# 	elif openFiles.selector == 1:
+# 		try:
+# 			file = open('./accuracyChecker.py', 'r+')
+# 			selector = 0
+# 		except:
+# 			print('accuracyChecker.py file not found, or invalid', file=sys.stderr, flush=True)
+# 			sys.exit(1)
+# 	return file
 
-	print('Data are parsed: Here they are: ')
-	for i in range(0, len(tab[0])):
-		print("x: {}; y: {}".format(tab[0][i], tab[1][i]))
-	return tab
-
-def openPredicator():
+def openFiles():
 	try:
-		file = open('./predicator.py', 'r+')
+		file = open('./commons.py', 'r+')
+		#print(file.read())
 	except:
-		print('Predicator file not found, or invalid', file=sys.stderr, flush=True)
-		exit(1)
+		print('commons.py file not found, or invalid', file=sys.stderr, flush=True)
+		sys.exit(1)
 	return file
+# no check for permissions here
 
 
 # for large data sets, due to overflow, the matrix are divided by a divisor
@@ -102,37 +99,37 @@ class Linear_Regression():
 	def cleanExit(self, file):
 		print('Error: could not write thetas into predicator file', file=sys.stderr, flush=True)
 		file.closeFile()
-		exit(1)
+		sys.exit(1)
 
 	def updateProgram(self):
 		try:
 			file = self.fileOpener()
+			data = file.read()
+			iT0 = data.find("t0 =")
+			if iT0 == -1:
+				self.cleanExit(file)
+			data = data.replace(data[iT0:data.find("\n", iT0)], 't0 = {}'.format(self.t[0] * self.divisor), 1)
+			iT1 = data.find("t1 =")
+			if iT1 == -1:
+				self.cleanExit(file)
+			data = data.replace(data[iT1:data.find("\n", iT1)], 't1 = {}'.format(self.t[1]), 1)
+			print(self.t[0], self.t[1])
+			file.seek(0)
+			file.write(data)
+			file.truncate()
+			file.close()
 		except:
 			return
-		data = file.read()
-		iT0 = data.find("t0 =")
-		if iT0 == -1:
-			self.cleanExit(file)
-		data = data.replace(data[iT0:data.find("\n", iT0)], 't0 = {}'.format(self.t[0] * self.divisor), 1)
-		iT1 = data.find("t1 =")
-		if iT1 == -1:
-			self.cleanExit(file)
-		data = data.replace(data[iT1:data.find("\n", iT1)], 't1 = {}'.format(self.t[1]), 1)
-		print(self.t[0], self.t[1])
-		file.seek(0)
-		file.write(data)
-		file.truncate()
-		file.close()
 
 div = 10000
 b = parser()
-file = openPredicator()
+# file = openPredicator()
 X = np.array(b[0], dtype=np.float64) / 10000
 Y = np.array(b[1], dtype=np.float64) / 10000
 
 steps = 100
 epochs = 0
-regression = Linear_Regression(X, Y, openPredicator, div)
+regression = Linear_Regression(X, Y, openFiles, div)
 Y_pred = regression.predict()
 while 1:
 	Y_pred = regression.predict()
@@ -143,6 +140,10 @@ while 1:
 		regression.plot_best_fit('Best fit')
 		accuracy = regression.getAccuracy()
 		regression.updateProgram()
+		# openFiles.selector = 0
+		# regression.updateProgram()
+		# openFiles.selector = 1
+
 		print('Accuracy is: ', accuracy)
 		choice = input("Do you wish to quit? (y)/(n)?")
 		if choice == 'y':
