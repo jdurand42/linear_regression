@@ -5,8 +5,8 @@ import tkinter
 import matplotlib
 matplotlib.use('TkAgg')
 
-t0 = 8481.806132627997
-t1 = -0.02130904698161982
+t0 = 8497.743651469735
+t1 = -0.021434369230796915
 
 def predicate(X):
 	Y_pred = np.array([], dtype=np.float64)
@@ -34,8 +34,8 @@ def parser():
 		for line in file.readlines():
 			b = line.split(",")
 			i += 1
-			if len(b) != 2 or b[0].isnumeric() == False or b[1][:-1].isnumeric() == False:
-				print("Data file invalid: line: ", i, file=os.stderr, flush=True)
+			if len(b) != 2 or b[0].isnumeric() == False or b[1][:-1].isnumeric() == False or int(b[0]) < 0 or int(b[1][:-1]) < 0:
+				print("Data file invalid: line: ", i," | only numeric positive values", file=os.stderr, flush=True)
 				exit(1)
 			tab[0].append(int(b[0]))
 			tab[1].append(int(b[1][:-1]))

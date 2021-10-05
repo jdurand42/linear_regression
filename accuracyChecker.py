@@ -23,7 +23,7 @@ def getAccuracy(Y, Y_pred):
 	for i in range(len(Y_pred)):
 		if Y[i] != 0:
 			b = np.append(b, abs(Y_pred[i] - Y[i]) / Y[i])
-	return (abs((1 - np.sum(b)) / m))
+	return (abs(( np.sum(b)) / m))
 
 def main():
 	print("Formula: (t0 + t1 * X): {} + {} * X".format(t0, t1))
