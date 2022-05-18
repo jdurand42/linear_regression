@@ -38,6 +38,6 @@ X = data['km']
 # print(y.head())
 print(y_pred.head())
 # reg.plot(X, y, y_pred)
-
+reg.export()
 
 # scale data

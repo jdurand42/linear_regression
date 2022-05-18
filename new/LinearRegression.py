@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-
-from sklearn.metrics import mean_squared_error
 import yaml
 
 class LinearRegression:
@@ -59,24 +57,27 @@ class LinearRegression:
 
 
     def export(self):
-
+        config = {
+            'a': self._a,
+            'b': self._b,
+            'metrics': self._metrics,
+            'learning_rate': self._l,
+            '_export_path': self._export_path,
+            'max_epochs': self.max_epochs,
+            }
+        # try:
+        with open(self._export_path, "w+") as file:
+            yaml.dump(config, file)
+            print(f"Config successully writen to {self._export_path}")
+        # except:
+            # print("Error while writing config")
 
     def configurate(self, config):
         pass
 
     def load(self, path):
-        config = {
-            'a': self._a,
-            'b': self._b,
-            'metrics': self._metrics,
-            'learning_rate': self.l,
-            '_export_path': self._export_path,
-            'max_epochs': self.max_epochs,
-        }
-        try:
-            with open(self._export_path, "w+"):
-
         pass
+
 
     def __str__(self):
         return f"a: {self._a}, b: {self._b}, metrics: {self._metrics}"
