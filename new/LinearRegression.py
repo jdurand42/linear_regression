@@ -3,13 +3,14 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import yaml
+import json
 
 class LinearRegression:
     def __init__(self, learning_rate=0.01):
         self._a = 0
         self._b = 0
         self._l = learning_rate
-        self._export_path = "./yaml/config.yaml"
+        self._export_path = "./yaml/config.json"
         self._metrics = {}
         max_epochs = 10000
 
@@ -62,22 +63,37 @@ class LinearRegression:
             'b': self._b,
             'metrics': self._metrics,
             'learning_rate': self._l,
-            '_export_path': self._export_path,
+            'export_path': self._export_path,
             'max_epochs': self.max_epochs,
             }
-        # try:
-        with open(self._export_path, "w+") as file:
-            yaml.dump(config, file)
-            print(f"Config successully writen to {self._export_path}")
-        # except:
-            # print("Error while writing config")
+        try:
+            with open(self._export_path, "w+") as file:
+                json.dump(config, file)
+                print(f"Config successully writen to {self._export_path}")
+        except:
+            print("Error while writing config")
+        file.close()
 
     def configurate(self, config):
         pass
 
-    def load(self, path):
-        pass
-
+    def load(self, **kwargs):
+        path = self._export_path
+        if path in kwargs:
+            path = kwargs['path']
+        with open(path, "r") as file:
+            config = json.load(file)
+            self._a = config['a']
+            self._b = config['b']
+            self._metrics = config['metrics']
+            self._l = config['learning_rate']
+            self._export_path = config['export_path']
+            self.max_epochs = config['max_epochs']
+            print("Object successully loaded")
+            print(str(self))
+        # except:
+            # print("Error while parsing config")
+            file.close()
 
     def __str__(self):
         return f"a: {self._a}, b: {self._b}, metrics: {self._metrics}"
