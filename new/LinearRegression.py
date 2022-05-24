@@ -53,7 +53,6 @@ class LinearRegression:
         # RMSE
         self.metrics['RMSE'] = (1/m) * (np.sum((y - y_pred) * (y - y_pred)))
         self.metrics['MAE'] = (1/m) / abs(np.sum(y - y_pred))
-        # print("mean: ", y.mean())
         mean = y.mean()
         y_mean = np.full(m, mean)
         self.metrics['RSQUARE'] = 1 - ((np.sum((y - y_pred) * (y - y_pred))) / np.sum((y - y_mean) * (y - y_mean)))
