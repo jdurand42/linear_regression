@@ -19,7 +19,7 @@ def plot_pred(X, y, pred, metrics):
 
     for i in range(0, len(X)):
         plt.plot([X[i], X[i]], [y[i], y_pred[i]], linestyle="--", color="red")
-    # 
+    #
     # labels = ""
     # for key in metrics:
     #     labels += f"{key}= {metrics[key]}\n"

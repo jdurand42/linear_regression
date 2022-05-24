@@ -7,8 +7,8 @@ import json
 
 class LinearRegression:
     def __init__(self, learning_rate=0.01):
-        self.a = 0
-        self.b = 0
+        self.theta1 = 0
+        self.theta0 = 0
         self.l = learning_rate
         self.export_path = "./json/config.json"
         self.metrics = {}
@@ -21,15 +21,17 @@ class LinearRegression:
         for epoch in range(0, self.max_epochs):
             y_pred = self.predict(X)
             m = len(X)
-            self.b = self.b - (self.l * ((1/m) * (np.sum(y_pred - y))))
-            self.a = self.a - (self.l * ((1/m) * (np.sum((y_pred - y) * X))))
+            b = self.theta0 - (self.l * ((1/m) * (np.sum(y_pred - y))))
+            a = self.theta1 - (self.l * ((1/m) * (np.sum((y_pred - y) * X))))
+            self.theta0 = b
+            self.theta1 = a
         self.get_metrics(X, y)
         print(str(self))
 
     def predict(self, X):
         y_pred = np.array([], dtype=np.float64)
         for x in X:
-            y_pred = np.append(y_pred, self.a * x + self.b)
+            y_pred = np.append(y_pred, self.theta1 * x + self.theta0)
         return y_pred
 
     def plot(self, X, y, y_pred):
@@ -59,8 +61,8 @@ class LinearRegression:
 
     def export(self):
         config = {
-            'a': self.a,
-            'b': self.b,
+            'theta1': self.theta1,
+            'theta0': self.theta0,
             'metrics': self.metrics,
             'learning_rate': self.l,
             'export_path': self.export_path,
@@ -81,19 +83,19 @@ class LinearRegression:
         path = self.export_path
         if path in kwargs:
             path = kwargs['path']
-        with open(path, "r") as file:
-            config = json.load(file)
-            self.a = config['a']
-            self.b = config['b']
-            self.metrics = config['metrics']
-            self.l = config['learning_rate']
-            self.export_path = config['export_path']
-            self.max_epochs = config['max_epochs']
-            print("Object successully loaded")
-            # print(str(self))
-        # except:
-            # print("Error while parsing config")
-            file.close()
+        try:
+            with open(path, "r") as file:
+                config = json.load(file)
+                self.theta1 = config['theta1']
+                self.theta0 = config['theta0']
+                self.metrics = config['metrics']
+                self.l = config['learning_rate']
+                self.export_path = config['export_path']
+                self.max_epochs = config['max_epochs']
+                print("Object successully loaded")
+                file.close()
+        except:
+            print("No conf file found, Initialazing with default value")
 
     def __str__(self):
-        return f"a: {self.a}, b: {self.b}, metrics: {self.metrics}"
+        return f"a: {self.theta1}, b: {self.theta0}, metrics: {self.metrics}"
