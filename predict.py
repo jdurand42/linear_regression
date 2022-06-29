@@ -36,6 +36,7 @@ def get_data(argv):
                 raise ValueError("Error: Numeric options must be float")
         i += 1
     X = pd.DataFrame(data={'km': b})
+    print(X.head())
     return X
 
 if __name__ == '__main__':
@@ -44,8 +45,11 @@ if __name__ == '__main__':
     if len(X['km']) == 0:
         sys.exit(0)
     reg.load()
+    # print(X.head())
     X_pred = X.copy()
-    X_pred = scale_data(X_pred)
+    # print(X_pred.head())
+    X_pred = scale_data(X_pred, standard_dev=reg.standard_dev, mean=reg.mean)
+    # print("ici", X_pred.head())
     X_pred = X_pred['km']
     y_pred = reg.predict(X_pred)
     print(y_pred)

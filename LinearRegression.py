@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 import json
 
 class LinearRegression:
-    def __init__(self, learning_rate=0.01):
+    def __init__(self, learning_rate=0.01, standard_dev=1.0, mean=0):
         self.theta1 = 0
         self.theta0 = 0
         self.l = learning_rate
         self.export_path = "./json/config.json"
         self.metrics = {}
-        max_epochs = 10000
+        self.standard_dev = standard_dev
+        self.mean = mean
 
     def fit(self, X, y, **kwargs):
         if "max_epochs" in kwargs:
@@ -66,6 +67,8 @@ class LinearRegression:
             'learning_rate': self.l,
             'export_path': self.export_path,
             'max_epochs': self.max_epochs,
+            'standard_dev': self.standard_dev,
+            'mean': self.mean
             }
         try:
             with open(self.export_path, "w+") as file:
@@ -91,10 +94,12 @@ class LinearRegression:
                 self.l = config['learning_rate']
                 self.export_path = config['export_path']
                 self.max_epochs = config['max_epochs']
+                self.standard_dev = config['standard_dev']
+                self.mean = config['mean']
                 print("Object successully loaded")
                 file.close()
         except:
             print("No conf file found, Initialazing with default value")
 
     def __str__(self):
-        return f"a: {self.theta1}, b: {self.theta0}, metrics: {self.metrics}"
+        return f"a: {self.theta1}, b: {self.theta0}, metrics: {self.metrics}, std: {self.standard_dev}"

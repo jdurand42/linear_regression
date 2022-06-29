@@ -1,6 +1,7 @@
 import pandas as pd
 from LinearRegression import LinearRegression
 from data_processing import scale_data
+from data_processing import standard_deviation
 import sys
 import matplotlib.pyplot as plt
 
@@ -32,12 +33,13 @@ if __name__ == "__main__":
     except:
         sys.exit(1)
 
-    data = scale_data(df.copy())
+    reg = LinearRegression()
+    reg.load()
+    data = scale_data(df.copy(), standard_dev=reg.standard_dev, mean=reg.mean)
     X = data['km']
     y = data['price']
 
-    reg = LinearRegression()
-    reg.load()
+
     y_pred = reg.predict(X)
     metrics = reg.get_metrics(X, y)
 
