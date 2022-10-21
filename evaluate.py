@@ -30,7 +30,10 @@ if __name__ == "__main__":
         df = pd.read_csv(sys.argv[1])
         if "km" not in df or "price" not in df:
             raise ValueError("Error: Your csv must contain 'km' and 'price' column")
-    except:
+        if df.isnull().values.any() == True:
+            raise ValueError("Error: Invalid value NaN in dataset")
+    except Exception as e:
+        print(e)
         sys.exit(1)
 
     reg = LinearRegression()

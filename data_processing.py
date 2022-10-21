@@ -12,7 +12,7 @@ def standard_deviation(X, mean):
     for x in X:
         b = np.append(b, (x - mean) * (x - mean))
     variance = mean_list(b)
-    print(variance)
+    # print(variance)
     return sqrt(variance)
 
 def scale_data(data, mean=None, standard_dev=None):
@@ -26,6 +26,5 @@ def scale_data(data, mean=None, standard_dev=None):
     for i in range(0, len(df['km'])):
         df['km'][i] = (df['km'][i] - mean) / standard_dev
 
-    # df['km'] = (df['km'] - df['km'].mean()) / standard_dev
-    print(df.head(2))
+    # print(df.head(2))
     return df

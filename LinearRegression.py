@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-# import yaml
 import json
 
 class LinearRegression:
@@ -36,13 +35,10 @@ class LinearRegression:
         return y_pred
 
     def plot(self, X, y, y_pred):
-        # y_pred = self.predict(X)
         f = plt.figure("Best_fit")
         f.clear()
         plt.plot(X, y_pred, color="red")
         plt.scatter(X, y)
-        #plt.plot(self.X, Y_pred, color="red")
-        #plt.scatter(self.X, self.Y)
         plt.ioff()
         plt.show()
 
@@ -54,7 +50,9 @@ class LinearRegression:
         # RMSE
         self.metrics['RMSE'] = (1/m) * (np.sum((y - y_pred) * (y - y_pred)))
         self.metrics['MAE'] = (1/m) / abs(np.sum(y - y_pred))
-        mean = y.mean()
+
+        # No div by zero
+        mean = y.mean() + 0.0000001
         y_mean = np.full(m, mean)
         self.metrics['RSQUARE'] = 1 - ((np.sum((y - y_pred) * (y - y_pred))) / np.sum((y - y_mean) * (y - y_mean)))
         return self.metrics
